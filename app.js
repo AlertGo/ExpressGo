@@ -12,6 +12,9 @@ var users = require('./routes/users');
 var news = require('./routes/news');
 //走进八马
 var inside = require('./routes/inside');
+//会员专区
+var vip = require('./routes/vip');
+
 
 
 var app = express();
@@ -32,6 +35,8 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/news', news)
 app.use('/img', inside)
+app.use('/vip', vip)
+
 
 
 // catch 404 and forward to error handler

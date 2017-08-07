@@ -26,6 +26,33 @@ router.post('/deles',function(req,res){
 
 	})
 })
+//删除LIST
+
+router.post('/newsdelete',function(req,res){
+	res.header("Access-Control-Allow-Origin","*")
+	var id=req.body['id']
+	pool.query(`delete from news where id='${id}'`,function(err,rows,fields){
+		if(err){
+			console.log(err)
+		}else{
+			res.send("1")
+		}
+
+	})
+})
+//删除DETAIL
+router.post('/newsdetaildelete',function(req,res){
+	res.header("Access-Control-Allow-Origin","*")
+	var id=req.body['id']
+	pool.query(`delete from newsdetail where id='${id}'`,function(err,rows,fields){
+		if(err){
+			console.log(err)
+		}else{
+			res.send("1")
+		}
+
+	})
+})
 
 
 //替换
@@ -42,7 +69,35 @@ router.post("/replace",function(req,res){
 		}
 	})
 })
-
+//替换数据
+router.post("/updatelist",function(req,res){
+	res.header("Access-Control-Allow-Origin","*")
+	var title=req.body["title"]
+	var date=req.body["date"]
+	var id=req.body['id']
+	console.log(id)
+	pool.query(`UPDATE news SET title='${title}',date='${date}' where id='${id}'`,function(err,rows,f){
+		if(err){
+			console.log(err)
+		}else{
+			res.send(rows)
+		}
+	})
+})
+//替换详情
+router.post("/updatedetail",function(req,res){
+	res.header("Access-Control-Allow-Origin","*")
+	var cons=req.body["cons"].replace(/W3School/g, "&")
+	var id=req.body['id']
+	console.log(id)
+	pool.query(`UPDATE newsdetail SET cons='${cons}' where id='${id}'`,function(err,rows,f){
+		if(err){
+			console.log(err)
+		}else{
+			res.send(rows)
+		}
+	})
+})
 //数据表添加数据
 router.post("/addliebiao",function(req,res){
 	res.header("Access-Control-Allow-Origin","*")
@@ -58,6 +113,7 @@ router.post("/addliebiao",function(req,res){
 })
 
 
+
 //数据表添加数据
 router.post("/news",function(req,res){
 	res.header("Access-Control-Allow-Origin","*")
@@ -69,9 +125,15 @@ router.post("/news",function(req,res){
 })
 router.post("/cons",function(req,res){
 	res.header("Access-Control-Allow-Origin","*")
-	var cons=req.body["cons"]
+	var cons=req.body["cons"].replace(/W3School/g, "&")
 	var id=req.body["id"]
+	var str=""
+	console.log(req.body)
+	for(var i in req.body){
+		str+=(i+req.body[i])
 
+	}
+	console.log(str)
 	pool.query(`insert into newsdetail(cons,id) values('${cons}','${id}')`,function(err,rows,fields){
 		res.send("1")
 	})
@@ -86,7 +148,6 @@ const getData = (url,table) => {
 		});
 	});
 }
-
 //服务器添加图片
 router.post('/addimg',function(req,res){
 	res.header("Access-Control-Allow-Origin", "*"); //跨域
@@ -95,7 +156,7 @@ router.post('/addimg',function(req,res){
 	var path=[]
 	//声明图片存放位置
 	form.uploadDir='public/images/';
-	//解析数据 
+	//解析数据
 	form.parse(req,function(error,fields,files){
 		console.log(error)
  		//files 等同于前端传递过来的图片信息 是一个对象
@@ -116,12 +177,10 @@ router.post('/addimg',function(req,res){
 			//新旧路径名替换
 			fs.renameSync(file.path,newPath);
 			path.push({"path":'images/'+fName})
-
 			//发送
-
 		}
-		res.send(path);   
-		
+		res.send(path);
+
 	})
 });
 
